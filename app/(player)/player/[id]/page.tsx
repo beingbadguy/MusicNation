@@ -81,9 +81,9 @@ const Page = () => {
     try {
       const response = await axios.get(
         `${
-          process.env.NEXT_PUBLIC_ENV === "production"
-            ? process.env.NEXT_PUBLIC_API
-            : "http://localhost:3000/"
+          process.env.NEXT_PUBLIC_ENV == "development"
+            ? "http://localhost:3000/"
+            : process.env.NEXT_PUBLIC_API
         }api/song/${params.id}`
       );
       setCurrentSong(response?.data?.data[0]);

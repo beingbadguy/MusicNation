@@ -10,15 +10,16 @@ const Page = () => {
   const [songs, setSongs] = useState<SongData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
+  console.log(process.env.NEXT_PUBLIC_API);
 
   const fetchSongs = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
         `${
-          process.env.NEXT_PUBLIC_ENV === "production"
-            ? process.env.NEXT_PUBLIC_API
-            : "http://localhost:3000/"
+          process.env.NEXT_PUBLIC_ENV == "development"
+            ? "http://localhost:3000/"
+            : process.env.NEXT_PUBLIC_API
         }api/song?q=arijit`
       );
       console.log(response.data.data);
