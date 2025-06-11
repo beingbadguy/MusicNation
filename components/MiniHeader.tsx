@@ -1,6 +1,7 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
+import { GoSearch } from "react-icons/go";
 
 const MiniHeader = () => {
   const MenuMap: Record<string, string> = {
@@ -12,9 +13,18 @@ const MiniHeader = () => {
   };
   const location = usePathname();
   console.log(MenuMap[location]);
+  const router = useRouter();
   return (
-    <div className="w-full flex items-center justify-end text-2xl font-bold tracking-wider">
-      {MenuMap[location]}
+    <div className="w-full flex items-center justify-end gap-2 ">
+      <div className=" text-2xl font-bold tracking-wider">
+        {MenuMap[location]}
+      </div>
+      <div>
+        <GoSearch
+          className="text-2xl mt-1 cursor-pointer"
+          onClick={() => router.push("/search")}
+        />
+      </div>
     </div>
   );
 };

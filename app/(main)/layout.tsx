@@ -30,7 +30,7 @@ export default function RootLayout({
           </div>
           <div className="w-full    flex items-start justify-start flex-col">
             <MiniHeader />
-            <div className="w-full max-h-screen min-h-[90vh] h-[90vh] overflow-y-scroll">
+            <div className="w-full max-h-screen min-h-[90vh] h-[90vh] overflow-y-scroll pt-2">
               {children}
             </div>
           </div>

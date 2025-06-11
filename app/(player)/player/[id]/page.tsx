@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { GoHeart } from "react-icons/go";
@@ -9,6 +9,7 @@ import {
   IoPlaySharp,
   IoReturnUpBackOutline,
 } from "react-icons/io5";
+import { LiaShareSolid } from "react-icons/lia";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 
 export interface SongData {
@@ -94,6 +95,20 @@ const Page = () => {
     }
   };
 
+  const location = usePathname();
+
+  const shareLink = () => {
+    const text = process.env.NEXT_PUBLIC_API + location;
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        console.log("Copied to clipboard! 🎉");
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
+  };
+
   useEffect(() => {
     fetchSongById();
   }, [params.id]);
@@ -121,6 +136,7 @@ const Page = () => {
       audioRef.current.src = currentSong.downloadUrl[4]?.url || "";
       audioRef.current.load(); // optional but ensures fresh load
     }
+    togglePlay();
   }, [currentSong]);
 
   if (loading) {
@@ -140,8 +156,14 @@ const Page = () => {
         >
           <IoReturnUpBackOutline className="size-5" />
         </div>
-        <div>
+        <div className="flex items-center gap-2">
           <GoHeart className="cursor-pointer hover:scale-90 transition-all duration-300 size-5" />
+          <LiaShareSolid
+            className="cursor-pointer hover:scale-90 transition-all duration-300 size-5"
+            onClick={() => {
+              shareLink();
+            }}
+          />
         </div>
       </div>
       <div className="w-full my-2">

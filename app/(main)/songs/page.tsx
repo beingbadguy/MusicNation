@@ -49,9 +49,9 @@ const Page = () => {
       transition={{
         type: "spring",
       }}
-      className=""
+      className="mb-6"
     >
-      <div className="space-y-2">
+      <div className="space-y-2 my-4">
         {songs?.map((song) => {
           const artistName = song?.artists?.primary[0]?.name;
           const image = song?.image[0]?.url;
