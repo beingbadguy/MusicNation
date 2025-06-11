@@ -56,24 +56,23 @@ interface Artist {
 const Page = () => {
   const params = useParams();
   const router = useRouter();
-  console.log(params.id);
 
   const [currentSong, setCurrentSong] = useState<SongData | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [progress, setProgress] = useState(0);
 
-  const togglePlay = (link: string) => {
-    console.log(link);
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.src = link;
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
+  const togglePlay = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      audio.play();
     }
+    setIsPlaying(!isPlaying);
   };
 
   const fetchSongById = async () => {
@@ -87,7 +86,6 @@ const Page = () => {
         }api/song/${params.id}`
       );
       setCurrentSong(response?.data?.data[0]);
-      console.log(response?.data.data[0]);
     } catch (error) {
       console.error("Error fetching song:", error);
     } finally {
@@ -99,62 +97,100 @@ const Page = () => {
     fetchSongById();
   }, [params.id]);
 
-  console.log(currentSong?.downloadUrl[4]?.url);
+  const handleTimeUpdate = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const percent = (audio.currentTime / audio.duration) * 100;
+    setProgress(percent);
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const width = rect.width;
+    const newTime = (clickX / width) * (audioRef.current?.duration || 0);
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
+    }
+  };
+
+  // Set the audio src only once when song is ready
+  useEffect(() => {
+    if (currentSong && audioRef.current) {
+      audioRef.current.src = currentSong.downloadUrl[4]?.url || "";
+      audioRef.current.load(); // optional but ensures fresh load
+    }
+  }, [currentSong]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[70vh] w-full ">
+      <div className="flex items-center justify-center min-h-[70vh] w-full">
         <AiOutlineLoading3Quarters className="animate-spin" />
       </div>
     );
   }
+
   return (
     <div className="flex items-center justify-center flex-col h-[90vh] max-h-[90vh] relative">
       <div
-        className="absolute top-0 left-0 cursor-pointer"
+        className="absolute -top-5 left-0 cursor-pointer hover:text-amber-300"
         onClick={() => router.back()}
       >
         <IoReturnUpBackOutline />
       </div>
+
+      {/* Album Art */}
       <div>
         <img
           src={currentSong?.image[2]?.url}
-          alt=""
-          className="rounded brightness-75 object-cover size-[300px]"
+          alt="cover"
+          className="rounded brightness-75 object-cover size-[360px]"
         />
       </div>
+
+      {/* Song Info */}
       <div className="flex items-center justify-center flex-col mt-10">
-        <div className="font-bold text-lg text-center my-1">
+        <div className="font-bold text-md text-center my-1">
           {currentSong?.name}
         </div>
         <div className="text-sm text-gray-300">
           {currentSong?.artists.primary[0].name}
         </div>
       </div>
-      <div className="my-6 flex items-center justify-between w-full gap-4">
+
+      {/* Controls */}
+      <div className="mt-6 mb-5 flex items-center justify-between w-full gap-4">
         <div
-          className={`bg-red-500 px-10 py-3 w-[70%] ${
+          className={`bg-red-500 px-10 py-5 w-[70%] ${
             isPlaying ? "rounded-4xl" : "rounded-md"
           } flex items-center justify-center transition-all duration-300 ease-in cursor-pointer`}
-          onClick={() => {
-            if (currentSong && currentSong?.downloadUrl[0]?.url) {
-              togglePlay(currentSong?.downloadUrl[0]?.url);
-            }
-          }}
+          onClick={togglePlay}
         >
           {isPlaying ? <IoPauseSharp /> : <IoPlaySharp />}
         </div>
-        <div className="bg-red-500 p-3 w-[30%] rounded-full flex items-center justify-center cursor-pointer">
+
+        <div className="bg-red-500 p-5 w-[30%] rounded-full flex items-center justify-center cursor-pointer">
           <MdSkipNext />
         </div>
       </div>
-      <div className="my-6 flex items-center justify-between w-full gap-4">
-        <div className="bg-red-500 p-3 w-[30%] rounded-full flex items-center justify-center cursor-pointer">
+
+      {/* Audio Player & Back/Next Buttons */}
+      <div className="flex items-center justify-between w-full gap-4">
+        <div className="bg-red-500 p-5 w-[30%] rounded-full flex items-center justify-center cursor-pointer">
           <MdSkipPrevious />
         </div>
-        <div>
-          {" "}
-          <audio ref={audioRef} controls className="mt-4 " />
+
+        <div className="w-[70%]">
+          <div
+            className="relative w-full h-2 bg-red-500  rounded-full cursor-pointer"
+            onClick={handleSeek}
+          >
+            <div
+              className="absolute top-0 left-0 h-2  bg-gray-300 rounded-full"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <audio ref={audioRef} onTimeUpdate={handleTimeUpdate} hidden />
         </div>
       </div>
     </div>
