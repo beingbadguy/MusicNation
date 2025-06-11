@@ -5,7 +5,9 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q");
 
-  const apiRes = await fetch(`https://saavn.dev/api/search/songs?query=${q}`);
+  const apiRes = await fetch(
+    `https://saavn.dev/api/search/songs?query=${q}&offset=20&limit=20`
+  );
   const data = await apiRes.json();
 
   return NextResponse.json(data, {

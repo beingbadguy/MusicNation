@@ -22,7 +22,7 @@ export default function RootLayout({
       <body
         className={`${geistMono.className} ${geistMono.className} antialiased  flex items-center justify-center  `}
       >
-        <div className="flex items-start w-full sm:w-1/2 md:w-1/2 lg:w-xl sm:max-w-3xl  justify-center pt-10 bg-red-700  min-h-screen  px-2">
+        <div className="flex items-start w-full sm:w-1/2 md:w-1/2 lg:w-xl sm:max-w-3xl  justify-center p-3 bg-red-700  min-h-screen pt-6  px-4">
           {children}
         </div>
       </body>

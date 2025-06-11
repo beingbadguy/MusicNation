@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { GoHeart } from "react-icons/go";
 import {
   IoPauseSharp,
   IoPlaySharp,
@@ -131,12 +132,20 @@ const Page = () => {
   }
 
   return (
-    <div className="flex items-center justify-center flex-col h-[90vh] max-h-[90vh] relative">
-      <div
-        className="absolute -top-5 left-0 cursor-pointer hover:text-amber-300"
-        onClick={() => router.back()}
-      >
-        <IoReturnUpBackOutline />
+    <div className="flex items-center justify-start flex-col h-[90vh] max-h-[90vh]  ">
+      <div className="w-full mb-1  flex items-center justify-between">
+        <div
+          className=" cursor-pointer hover:text-amber-300"
+          onClick={() => router.back()}
+        >
+          <IoReturnUpBackOutline className="size-5" />
+        </div>
+        <div>
+          <GoHeart className="cursor-pointer hover:scale-90 transition-all duration-300 size-5" />
+        </div>
+      </div>
+      <div className="w-full my-2">
+        <h1 className="text-2xl font-bold">Now Playing</h1>
       </div>
 
       {/* Album Art */}
