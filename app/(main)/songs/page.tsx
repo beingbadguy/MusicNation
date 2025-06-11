@@ -16,8 +16,8 @@ const Page = () => {
     try {
       const response = await axios.get(
         `${
-          process.env.NEXT_ENV === "production"
-            ? process.env.NEXT_API
+          process.env.NEXT_PUBLIC_ENV === "production"
+            ? process.env.NEXT_PUBLIC_API
             : "http://localhost:3000/"
         }api/song?q=arijit`
       );
