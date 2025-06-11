@@ -15,7 +15,11 @@ const Page = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/song?q=arijit"
+        `${
+          process.env.NEXT_ENV === "production"
+            ? process.env.NEXT_API
+            : "http://localhost:3000/"
+        }api/song?q=arijit`
       );
       console.log(response.data.data);
       setSongs(response?.data?.data?.results || []);
