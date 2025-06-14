@@ -3,14 +3,13 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { useRouter } from "next/navigation";
-import { SongData } from "@/app/(player)/player/[id]/page";
+import { SongData } from "@/components/Player";
+import { useStore } from "@/store";
 
 const Page = () => {
   const [songs, setSongs] = useState<SongData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const router = useRouter();
-  console.log(process.env.NEXT_PUBLIC_API);
+  const { mediaStartedToggle, setSongId } = useStore();
 
   const fetchSongs = async () => {
     setLoading(true);
@@ -49,7 +48,7 @@ const Page = () => {
       transition={{
         type: "spring",
       }}
-      className="mb-6"
+      className="mb-30"
     >
       <div className="space-y-2 my-4">
         {songs?.map((song) => {
@@ -63,7 +62,10 @@ const Page = () => {
             <div
               key={song.id}
               className="mb-2 flex gap-2 items-center cursor-pointer hover:bg-red-600 rounded p-1"
-              onClick={() => router.push(`/player/${song.id}`)}
+              onClick={() => {
+                mediaStartedToggle();
+                setSongId(song.id);
+              }}
             >
               <img src={image} alt="song" className="w-14 h-14 rounded-lg" />
               <div className="w-full">
