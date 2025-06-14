@@ -4,32 +4,33 @@ import React from "react";
 import { GiMusicalNotes } from "react-icons/gi";
 import {
   VscAccount,
-  VscChromeMaximize,
+  // VscChromeMaximize,
   VscFolder,
-  VscSettingsGear,
-  VscVersions,
+  // VscSettingsGear,
+  // VscVersions,
 } from "react-icons/vsc";
 import { motion } from "framer-motion";
+import { IoMusicalNoteOutline } from "react-icons/io5";
 
 const Header = () => {
   const menu = [
-    {
-      name: "Home",
-      url: "/",
-      icon: <VscChromeMaximize />,
-    },
+    // {
+    //   name: "Home",
+    //   url: "/",
+    //   icon: <VscChromeMaximize />,
+    // },
     {
       name: "Songs",
       url: "/songs",
       icon: <GiMusicalNotes />,
     },
+    // {
+    //   name: "Lists",
+    //   url: "/lists",
+    //   icon: <VscVersions />,
+    // },
     {
-      name: "Lists",
-      url: "/lists",
-      icon: <VscVersions />,
-    },
-    {
-      name: "Local",
+      name: "Recent",
       url: "/local",
       icon: <VscFolder />,
     },
@@ -45,9 +46,9 @@ const Header = () => {
   return (
     <div className="flex items-center flex-col">
       <div className="w-[35px] flex items-end justify-end">
-        <VscSettingsGear />
+        <IoMusicalNoteOutline className="animate-pulse" />
       </div>
-      <div className="mt-10 flex items-center flex-col gap-20 ">
+      <div className="mt-10 flex items-center flex-col gap-16 ">
         {menu.map((item, index) => (
           <div
             key={index}
@@ -56,7 +57,7 @@ const Header = () => {
             }}
             className={`${
               location === item.url ? "text-white" : "text-gray-300"
-            } flex items-center gap-1 cursor-pointer `}
+            } flex items-center g cursor-pointer `}
           >
             <motion.div
               initial={{ opacity: 0 }}

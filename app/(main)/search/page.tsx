@@ -9,7 +9,12 @@ const Page = () => {
   const [query, setQuery] = useState("");
   const [songs, setSongs] = useState<SongData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const { mediaStartedToggle, setSongId, setRecentSongs } = useStore();
+  const {
+    mediaStartedToggle,
+    setSongId,
+    setRecentSongs,
+    setRecentSongsPlayed,
+  } = useStore();
   const searchSong = async () => {
     setLoading(true);
     try {
@@ -72,6 +77,7 @@ const Page = () => {
                 onClick={() => {
                   mediaStartedToggle();
                   setSongId(song.id);
+                  setRecentSongsPlayed(song);
                 }}
               >
                 <img src={image} alt="song" className="w-14 h-14 rounded-lg" />

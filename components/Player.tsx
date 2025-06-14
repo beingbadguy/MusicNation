@@ -4,7 +4,7 @@ import axios from "axios";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { GoHeart } from "react-icons/go";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 import {
   IoPauseSharp,
   IoPlaySharp,
@@ -68,29 +68,34 @@ const Player = ({ songId }: { songId: string }) => {
     isMediaMinimised,
     mediaMinimiseToggle,
     recentSongs,
+    setFavouriteSongs,
+    favouriteSongs,
   } = useStore();
 
   const [currentSong, setCurrentSong] = useState<SongData | null>(null);
   const [loading, setLoading] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [progress, setProgress] = useState(0);
-  
 
   const nextSongHandle = () => {
     if (!recentSongs) return;
+    if (!recentSongs?.length) return;
     setCurrentSong((prev) => {
-      if (prev) {
-        const nextIndex = recentSongs.indexOf(prev) + 1;
-        return recentSongs[nextIndex] || null;
+      if (!prev) return null;
+      const currentIndex = recentSongs.findIndex((song) => song.id === prev.id);
+      const nextIndex = currentIndex + 1;
+      if (nextIndex >= recentSongs.length) return recentSongs[0];
+      else {
+        return recentSongs[nextIndex] ?? null;
       }
-      return null;
     });
   };
   const prevSongHandle = () => {
     if (!recentSongs) return;
     setCurrentSong((prev) => {
+      if (!prev) return null;
       if (prev) {
-        const prevIndex = recentSongs.indexOf(prev) - 1;
+        const prevIndex = recentSongs.findIndex((song) => song.id === prev.id);
         if (prevIndex < 0) return recentSongs[0];
         else {
           return recentSongs[prevIndex] || null;
@@ -99,6 +104,12 @@ const Player = ({ songId }: { songId: string }) => {
       return null;
     });
   };
+
+  const isAlreadyFav = () => {
+    if (!favouriteSongs) return false;
+    return favouriteSongs.some((song) => song.id === currentSong?.id);
+  };
+  // console.log(isAlreadyFav());
 
   const notify = () =>
     toast("Link Copied!", {
@@ -255,7 +266,18 @@ const Player = ({ songId }: { songId: string }) => {
           <IoReturnUpBackOutline className="size-5" />
         </div>
         <div className="flex items-center gap-2">
-          <GoHeart className="cursor-pointer hover:scale-90 transition-all duration-300 size-5" />
+          {isAlreadyFav() ? (
+            <GoHeartFill className="text-red-500 size-5" />
+          ) : (
+            <GoHeart
+              className="cursor-pointer hover:scale-90 transition-all duration-300 size-5"
+              onClick={() => {
+                if (!currentSong) return;
+                setFavouriteSongs(currentSong);
+              }}
+            />
+          )}
+
           <LiaDownloadSolid
             onClick={() => {
               if (isMobile) {
@@ -277,9 +299,7 @@ const Player = ({ songId }: { songId: string }) => {
         </div>
       </div>
       <div className={`${isMediaMinimised ? "hidden" : ""} w-full my-2`}>
-        <h1
-          className={` ${isMediaMinimised ? "hidden" : ""} text-2xl font-bold`}
-        >
+        <h1 className={` ${isMediaMinimised ? "hidden" : ""} font-bold`}>
           Now Playing
         </h1>
       </div>
@@ -401,6 +421,7 @@ const Player = ({ songId }: { songId: string }) => {
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
         hidden
+        onEnded={nextSongHandle}
       />
     </div>
   );

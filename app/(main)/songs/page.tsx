@@ -9,7 +9,14 @@ import { useStore } from "@/store";
 const Page = () => {
   const [songs, setSongs] = useState<SongData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const { mediaStartedToggle, setSongId, setRecentSongs } = useStore();
+  const {
+    mediaStartedToggle,
+    setSongId,
+    setRecentSongs,
+    setLastPlayedSongId,
+    setRecentSongsPlayed,
+  } = useStore();
+  // console.log(songs);
 
   const fetchSongs = async () => {
     setLoading(true);
@@ -34,7 +41,6 @@ const Page = () => {
     fetchSongs();
   }, []);
 
-  // console.log(songs);
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[70vh] w-full ">
@@ -66,6 +72,10 @@ const Page = () => {
               onClick={() => {
                 mediaStartedToggle();
                 setSongId(song.id);
+                // console.log(song?.artists?.primary[0]?.id);
+                // console.log(song);
+                setRecentSongsPlayed(song);
+                setLastPlayedSongId(song?.artists?.primary[1]?.id);
               }}
             >
               <img src={image} alt="song" className="w-14 h-14 rounded-lg" />

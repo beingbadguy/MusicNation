@@ -2,20 +2,20 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store";
+import { IoHeartOutline } from "react-icons/io5";
 
 const Page = () => {
   const {
-    getRecentSongsPlayed,
-    recentSongsPlayed,
     mediaStartedToggle,
     setSongId,
-
+    favouriteSongs,
     setLastPlayedSongId,
     setRecentSongsPlayed,
+    getFavouriteSongs,
   } = useStore();
 
   useEffect(() => {
-    getRecentSongsPlayed();
+    getFavouriteSongs();
   }, []);
   return (
     <motion.div
@@ -27,17 +27,19 @@ const Page = () => {
       className="mb-30"
     >
       <div className="">
-        {recentSongsPlayed?.length > 0 ? (
-          ""
+        {favouriteSongs?.length > 0 ? (
+          <div className="text-lg font-[300] flex items-center gap-1">
+            Your favourites! <IoHeartOutline />
+          </div>
         ) : (
           <h1 className="text-lg font-[300] mb-4 flex items-center justify-center min-h-[90vh]">
-            No recent played
+            You have no favourites!
           </h1>
         )}
       </div>
       <div className="space-y-2 my-4">
-        {recentSongsPlayed &&
-          recentSongsPlayed?.map((song) => {
+        {favouriteSongs &&
+          favouriteSongs?.map((song) => {
             const artistName = song?.artists?.primary[0]?.name;
             const image = song?.image[0]?.url;
             const duration = song?.duration;

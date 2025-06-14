@@ -16,6 +16,15 @@ interface StoreState {
   setSongId: (id: string) => void;
   recentSongs: SongData[];
   setRecentSongs: (songs: SongData[]) => void;
+  lastPlayedSongId: string | null;
+  setLastPlayedSongId: (id: string) => void;
+  getLastPlayedSongId: () => void;
+  recentSongsPlayed: SongData[];
+  setRecentSongsPlayed: (song: SongData) => void;
+  getRecentSongsPlayed: () => void;
+  favouriteSongs: SongData[];
+  setFavouriteSongs: (songs: SongData) => void;
+  getFavouriteSongs: () => void;
 }
 
 export const useStore = create<StoreState>((set, get) => ({
@@ -28,7 +37,16 @@ export const useStore = create<StoreState>((set, get) => ({
   mediaStopToggle: () => set({ mediaStarted: false }),
   isMediaMinimised: false,
   mediaMinimiseToggle: () => set({ isMediaMinimised: !get().isMediaMinimised }),
-
+  lastPlayedSongId: null,
+  setLastPlayedSongId: (id) => {
+    if (!id) return null;
+    localStorage.setItem("lastSongId", id);
+    set({ lastPlayedSongId: id });
+  },
+  getLastPlayedSongId: () => {
+    localStorage.getItem("lastSongId"),
+      set({ lastPlayedSongId: localStorage.getItem("lastSongId") });
+  },
   recentSongs: [],
   setRecentSongs: (songs: SongData[]) => set({ recentSongs: songs }),
   togglePlay: () => {
@@ -43,6 +61,51 @@ export const useStore = create<StoreState>((set, get) => ({
       }
     }
   },
+  recentSongsPlayed: [],
+  setRecentSongsPlayed: (song: SongData) => {
+    if (!song) return;
+    const { getRecentSongsPlayed } = get();
+    getRecentSongsPlayed();
+    set({ recentSongsPlayed: [...get().recentSongsPlayed, song] });
+    const updatedRecentSongs = get().recentSongsPlayed;
+    localStorage.setItem(
+      "recentSongsPlayed",
+      JSON.stringify(updatedRecentSongs)
+    );
+  },
+  getRecentSongsPlayed: () => {
+    const recentSongsPlayed = localStorage.getItem("recentSongsPlayed");
+    if (recentSongsPlayed) {
+      set({
+        recentSongsPlayed: JSON.parse(recentSongsPlayed),
+        recentSongs: JSON.parse(recentSongsPlayed),
+      });
+    }
+  },
+  favouriteSongs: [],
+  setFavouriteSongs: (song: SongData) => {
+    if (!song) return;
+    const { favouriteSongs } = get();
+    const alreadyExists = favouriteSongs.find((f) => f.id === song.id);
+    if (alreadyExists) return;
+    get().getFavouriteSongs();
+    set({ favouriteSongs: [...get().favouriteSongs, song] });
+    const updatedFavouriteSongs = get().favouriteSongs;
+    localStorage.setItem(
+      "favouriteSongs",
+      JSON.stringify(updatedFavouriteSongs)
+    );
+  },
+  getFavouriteSongs: () => {
+    const favouriteSongs = localStorage.getItem("favouriteSongs");
+    if (favouriteSongs) {
+      set({
+        favouriteSongs: JSON.parse(favouriteSongs),
+        recentSongs: JSON.parse(favouriteSongs),
+      });
+    }
+  },
+
   audioReference: null,
   setaudioReference: (audioReference) => set({ audioReference }),
   handleSeekBar: (e) => {

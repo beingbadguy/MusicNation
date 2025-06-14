@@ -8,7 +8,7 @@ const MiniHeader = () => {
     "/": "Home",
     "/songs": "Songs",
     "/lists": "Lists",
-    "/local": "Local",
+    "/local": "Recently Played",
     "/user": "User",
   };
   const location = usePathname();

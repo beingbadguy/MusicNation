@@ -18,10 +18,6 @@ export default function RootLayout({
 }>) {
   const { mediaStarted, isMediaMinimised } = useStore();
 
-
-  
-
-
   return (
     <html lang="en">
       <body
@@ -39,7 +35,7 @@ export default function RootLayout({
               <MediaPlayer />
             </div>
           )}
-          <div className="w-[100px]">
+          <div className="w-[70px]">
             <Header />
           </div>
           <div className="w-full    flex items-start justify-start flex-col">
