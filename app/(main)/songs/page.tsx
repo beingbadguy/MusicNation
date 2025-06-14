@@ -9,7 +9,7 @@ import { useStore } from "@/store";
 const Page = () => {
   const [songs, setSongs] = useState<SongData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const { mediaStartedToggle, setSongId } = useStore();
+  const { mediaStartedToggle, setSongId, setRecentSongs } = useStore();
 
   const fetchSongs = async () => {
     setLoading(true);
@@ -22,6 +22,7 @@ const Page = () => {
         }api/song?q=arijit`
       );
       // console.log(response.data.data);
+      setRecentSongs(response?.data?.data?.results || []);
       setSongs(response?.data?.data?.results || []);
     } catch (error) {
       console.error("Error fetching songs:", error);

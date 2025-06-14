@@ -67,15 +67,41 @@ const Player = ({ songId }: { songId: string }) => {
     hasStartedPlaying,
     isMediaMinimised,
     mediaMinimiseToggle,
+    recentSongs,
   } = useStore();
 
   const [currentSong, setCurrentSong] = useState<SongData | null>(null);
   const [loading, setLoading] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [progress, setProgress] = useState(0);
+  
+
+  const nextSongHandle = () => {
+    if (!recentSongs) return;
+    setCurrentSong((prev) => {
+      if (prev) {
+        const nextIndex = recentSongs.indexOf(prev) + 1;
+        return recentSongs[nextIndex] || null;
+      }
+      return null;
+    });
+  };
+  const prevSongHandle = () => {
+    if (!recentSongs) return;
+    setCurrentSong((prev) => {
+      if (prev) {
+        const prevIndex = recentSongs.indexOf(prev) - 1;
+        if (prevIndex < 0) return recentSongs[0];
+        else {
+          return recentSongs[prevIndex] || null;
+        }
+      }
+      return null;
+    });
+  };
 
   const notify = () =>
-    toast("Link Copied", {
+    toast("Link Copied!", {
       duration: 1000,
       position: "top-center",
 
@@ -299,13 +325,17 @@ const Player = ({ songId }: { songId: string }) => {
 
           <div
             className={` bg-[#135867] p-5 w-[30%] rounded-full flex items-center justify-center cursor-pointer `}
+            onClick={nextSongHandle}
           >
             <MdSkipNext />
           </div>
         </div>
         {/* Audio Player & Back/Next Buttons */}
         <div className="flex items-center justify-between w-full gap-4">
-          <div className="bg-[#135867] p-5 w-[30%] rounded-full flex items-center justify-center cursor-pointer">
+          <div
+            className="bg-[#135867] p-5 w-[30%] rounded-full flex items-center justify-center cursor-pointer"
+            onClick={prevSongHandle}
+          >
             <MdSkipPrevious />
           </div>
 

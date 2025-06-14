@@ -9,7 +9,7 @@ const Page = () => {
   const [query, setQuery] = useState("");
   const [songs, setSongs] = useState<SongData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const { mediaStartedToggle, setSongId } = useStore();
+  const { mediaStartedToggle, setSongId, setRecentSongs } = useStore();
   const searchSong = async () => {
     setLoading(true);
     try {
@@ -21,6 +21,8 @@ const Page = () => {
         }api/song?q=${query}`
       );
       // console.log(response.data.data);
+      setRecentSongs(response?.data?.data?.results || []);
+
       setSongs(response?.data?.data?.results || []);
     } catch (error) {
       console.error("Error fetching songs:", error);

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { SongData } from "./components/Player";
 interface StoreState {
   hasStartedPlaying: boolean;
   isPlaying: boolean;
@@ -13,6 +14,8 @@ interface StoreState {
   mediaStopToggle: () => void;
   currentSongId: string | null;
   setSongId: (id: string) => void;
+  recentSongs: SongData[];
+  setRecentSongs: (songs: SongData[]) => void;
 }
 
 export const useStore = create<StoreState>((set, get) => ({
@@ -26,6 +29,8 @@ export const useStore = create<StoreState>((set, get) => ({
   isMediaMinimised: false,
   mediaMinimiseToggle: () => set({ isMediaMinimised: !get().isMediaMinimised }),
 
+  recentSongs: [],
+  setRecentSongs: (songs: SongData[]) => set({ recentSongs: songs }),
   togglePlay: () => {
     const audio = get().audioReference?.current;
     if (audio) {
