@@ -12,7 +12,7 @@ const MiniHeader = () => {
     "/user": "User",
   };
   const location = usePathname();
-  console.log(MenuMap[location]);
+  // console.log(MenuMap[location]);
   const router = useRouter();
   return (
     <div className="w-full flex items-center justify-end gap-2 ">

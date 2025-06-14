@@ -17,12 +17,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const { mediaStarted, isMediaMinimised } = useStore();
+
+
+  
+
+
   return (
     <html lang="en">
       <body
         className={`${geistMono.className} ${geistMono.className} antialiased flex items-center justify-center `}
       >
-        <div className="flex items-start w-full sm:w-1/2 md:w-sm lg:w-sm sm:max-w-3xl   justify-center pt-10 bg-red-700  min-h-screen  max-h-screen overflow-hidden px-2 relative">
+        <div className="flex items-start w-full sm:w-1/2 md:w-sm lg:w-sm sm:max-w-3xl   justify-center pt-10 bg-[#0A2E36]  min-h-screen  max-h-screen overflow-hidden px-2 relative">
           {mediaStarted && (
             <div
               className={`${

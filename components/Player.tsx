@@ -10,8 +10,9 @@ import {
   IoPlaySharp,
   IoReturnUpBackOutline,
 } from "react-icons/io5";
-import { LiaShareSolid } from "react-icons/lia";
+import { LiaDownloadSolid, LiaShareSolid } from "react-icons/lia";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
+import toast, { Toaster } from "react-hot-toast";
 
 export interface SongData {
   id: string;
@@ -59,7 +60,6 @@ interface Artist {
 const Player = ({ songId }: { songId: string }) => {
   const {
     handleSeekBar,
-    startPlaying,
     isPlaying,
     togglePlay,
     setaudioReference,
@@ -72,6 +72,39 @@ const Player = ({ songId }: { songId: string }) => {
   const [loading, setLoading] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [progress, setProgress] = useState(0);
+
+  const notify = () =>
+    toast("Link Copied", {
+      duration: 1000,
+      position: "top-center",
+
+      // Styling
+      style: {
+        border: "1px solid #23A1BE",
+        padding: "4px",
+        backgroundColor: "#0A2E36",
+        color: "#23A1BE",
+      },
+      className: "",
+
+      // Custom Icon
+      icon: "🔥",
+
+      // Change colors of success/error/loading icon
+      iconTheme: {
+        primary: "#23A1BE",
+        secondary: "#23A1BE",
+      },
+
+      // Aria
+      ariaProps: {
+        role: "status",
+        "aria-live": "polite",
+      },
+
+      // Additional Configuration
+      removeDelay: 1000,
+    });
 
   const fetchSongById = async () => {
     setLoading(true);
@@ -116,6 +149,42 @@ const Player = ({ songId }: { songId: string }) => {
     setProgress(percent);
   };
 
+  const downloadAudio = async () => {
+    if (!currentSong) return;
+    const response = await fetch(currentSong.downloadUrl[4]?.url);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${currentSong.name}.mp3`; // customize filename
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeElement = document.activeElement;
+      const isTyping =
+        activeElement &&
+        (activeElement.tagName === "INPUT" ||
+          activeElement.tagName === "TEXTAREA");
+
+      if (e.code === "Space" && !isTyping) {
+        e.preventDefault(); // prevent page scroll
+        togglePlay();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [hasStartedPlaying, currentSong, togglePlay]);
+
   useEffect(() => {
     if (currentSong && audioRef.current) {
       audioRef.current.src = currentSong.downloadUrl[4]?.url || "";
@@ -139,10 +208,12 @@ const Player = ({ songId }: { songId: string }) => {
     <div
       className={` ${
         isMediaMinimised
-          ? "h-[10vh]  overflow-hidden"
-          : "h-screen min-h-[110vh] overflow-y-scroll p-6 "
-      } flex items-center justify-start flex-col  absolute bg-red-700 top-0 w-[100%]   border border-red-500 rounded`}
+          ? "h-[10vh]  overflow-hidden border  border-gray-600 "
+          : "h-[100dvh] min-h-[100dvh] overflow-y-scroll p-6 "
+      } flex items-center justify-start flex-col  absolute bg-[#0A2E36] top-0 w-[100%] rounded`}
     >
+      {" "}
+      <Toaster />
       <div
         className={` ${
           isMediaMinimised ? "hidden" : ""
@@ -158,9 +229,14 @@ const Player = ({ songId }: { songId: string }) => {
         </div>
         <div className="flex items-center gap-2">
           <GoHeart className="cursor-pointer hover:scale-90 transition-all duration-300 size-5" />
+          <LiaDownloadSolid
+            onClick={downloadAudio}
+            className="cursor-pointer hover:scale-90 transition-all duration-300 size-5"
+          />
           <LiaShareSolid
             className="cursor-pointer hover:scale-90 transition-all duration-300 size-5"
             onClick={() => {
+              notify();
               shareLink();
             }}
           />
@@ -173,7 +249,6 @@ const Player = ({ songId }: { songId: string }) => {
           Now Playing
         </h1>
       </div>
-
       {/* main  */}
       <div
         className={` ${
@@ -204,35 +279,31 @@ const Player = ({ songId }: { songId: string }) => {
         {/* Controls */}
         <div className="mt-6 mb-5 flex items-center justify-between w-full gap-4">
           <div
-            className={`bg-red-500 px-10 py-5 w-[70%] ${
+            className={`bg-[#135867] px-10 py-5 w-[70%] ${
               isPlaying ? "rounded-4xl" : "rounded-md"
             } flex items-center justify-center transition-all duration-300 ease-in cursor-pointer`}
             onClick={() => {
-              if (!hasStartedPlaying) {
-                startPlaying(currentSong?.downloadUrl[4]?.url || "");
-              } else {
-                togglePlay();
-              }
+              togglePlay();
             }}
           >
             {isPlaying ? <IoPauseSharp /> : <IoPlaySharp />}
           </div>
 
           <div
-            className={` bg-red-500 p-5 w-[30%] rounded-full flex items-center justify-center cursor-pointer `}
+            className={` bg-[#135867] p-5 w-[30%] rounded-full flex items-center justify-center cursor-pointer `}
           >
             <MdSkipNext />
           </div>
         </div>
         {/* Audio Player & Back/Next Buttons */}
         <div className="flex items-center justify-between w-full gap-4">
-          <div className="bg-red-500 p-5 w-[30%] rounded-full flex items-center justify-center cursor-pointer">
+          <div className="bg-[#135867] p-5 w-[30%] rounded-full flex items-center justify-center cursor-pointer">
             <MdSkipPrevious />
           </div>
 
           <div className="w-[70%]">
             <div
-              className="relative w-full h-2 bg-red-500  rounded-full cursor-pointer"
+              className="relative w-full h-2 bg-[#135867]  rounded-full cursor-pointer"
               onClick={handleSeekBar}
             >
               <div
@@ -243,9 +314,13 @@ const Player = ({ songId }: { songId: string }) => {
           </div>
         </div>
       </div>
-
       {/* phone main  */}
       <div
+        onClick={() => {
+          if (isMediaMinimised) {
+            mediaMinimiseToggle();
+          }
+        }}
         className={` ${
           isMediaMinimised ? "" : "hidden"
         } flex items-center justify-between gap-4 w-full p-2 cursor-pointer`}
@@ -285,21 +360,18 @@ const Player = ({ songId }: { songId: string }) => {
 
         {/* play pause  */}
         <div
-          className={`bg-red-500 p-2 ${
+          className={`bg-[#135867] p-2 ${
             isPlaying ? "rounded-4xl" : "rounded-md"
           } flex items-center justify-center transition-all duration-300 ease-in cursor-pointer`}
-          onClick={() => {
-            if (!hasStartedPlaying) {
-              startPlaying(currentSong?.downloadUrl[4]?.url || "");
-            } else {
-              togglePlay();
-            }
+          onClick={(e) => {
+            e.stopPropagation();
+
+            togglePlay();
           }}
         >
           {isPlaying ? <IoPauseSharp /> : <IoPlaySharp />}
         </div>
       </div>
-
       <audio
         crossOrigin="anonymous"
         ref={audioRef}

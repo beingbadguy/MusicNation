@@ -21,7 +21,7 @@ const Page = () => {
             : process.env.NEXT_PUBLIC_API
         }api/song?q=arijit`
       );
-      console.log(response.data.data);
+      // console.log(response.data.data);
       setSongs(response?.data?.data?.results || []);
     } catch (error) {
       console.error("Error fetching songs:", error);
@@ -33,7 +33,7 @@ const Page = () => {
     fetchSongs();
   }, []);
 
-  console.log(songs);
+  // console.log(songs);
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[70vh] w-full ">
@@ -61,7 +61,7 @@ const Page = () => {
           return (
             <div
               key={song.id}
-              className="mb-2 flex gap-2 items-center cursor-pointer hover:bg-red-600 rounded p-1"
+              className="mb-2 flex gap-2 items-center cursor-pointer hover:bg-[#135867] rounded p-1"
               onClick={() => {
                 mediaStartedToggle();
                 setSongId(song.id);

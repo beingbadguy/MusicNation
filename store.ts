@@ -6,7 +6,6 @@ interface StoreState {
   audioReference: React.RefObject<HTMLAudioElement> | null;
   setaudioReference: (e: React.RefObject<HTMLAudioElement>) => void;
   handleSeekBar: (e: React.MouseEvent<HTMLDivElement>) => void;
-  startPlaying: (link: string) => void;
   isMediaMinimised: boolean;
   mediaMinimiseToggle: () => void;
   mediaStarted: boolean;
@@ -22,19 +21,11 @@ export const useStore = create<StoreState>((set, get) => ({
   hasStartedPlaying: false,
   currentSongId: null,
   setSongId: (id) => set({ currentSongId: id }),
-
   mediaStartedToggle: () => set({ mediaStarted: true }),
   mediaStopToggle: () => set({ mediaStarted: false }),
   isMediaMinimised: false,
   mediaMinimiseToggle: () => set({ isMediaMinimised: !get().isMediaMinimised }),
-  startPlaying: (link: string) => {
-    const audio = get().audioReference?.current;
-    if (audio) {
-      audio.src = link;
-      audio.play();
-      set({ isPlaying: true, hasStartedPlaying: true });
-    }
-  },
+
   togglePlay: () => {
     const audio = get().audioReference?.current;
     if (audio) {

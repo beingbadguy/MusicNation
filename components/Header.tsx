@@ -41,7 +41,7 @@ const Header = () => {
   ];
   const router = useRouter();
   const location = usePathname();
-  console.log(location);
+  // console.log(location);
   return (
     <div className="flex items-center flex-col">
       <div className="w-[35px] flex items-end justify-end">
