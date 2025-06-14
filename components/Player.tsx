@@ -13,6 +13,7 @@ import {
 import { LiaDownloadSolid, LiaShareSolid } from "react-icons/lia";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import toast, { Toaster } from "react-hot-toast";
+import { isMobile } from "react-device-detect";
 
 export interface SongData {
   id: string;
@@ -67,7 +68,6 @@ const Player = ({ songId }: { songId: string }) => {
     isMediaMinimised,
     mediaMinimiseToggle,
   } = useStore();
-  console.log(isMediaMinimised);
 
   const [currentSong, setCurrentSong] = useState<SongData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -210,7 +210,7 @@ const Player = ({ songId }: { songId: string }) => {
       className={` ${
         isMediaMinimised
           ? "h-[10vh]  overflow-hidden border  border-gray-600 "
-          : "h-[100dvh] min-h-[100dvh] overflow-y-scroll p-6 "
+          : "h-[100dvh] min-h-[100dvh] max-h-[100dvh] overflow-y-scroll p-6 "
       } flex items-center justify-start flex-col  absolute bg-[#0A2E36] top-0 w-[100%] rounded`}
     >
       {" "}
@@ -231,7 +231,14 @@ const Player = ({ songId }: { songId: string }) => {
         <div className="flex items-center gap-2">
           <GoHeart className="cursor-pointer hover:scale-90 transition-all duration-300 size-5" />
           <LiaDownloadSolid
-            onClick={downloadAudio}
+            onClick={() => {
+              if (isMobile) {
+                if (!currentSong) return;
+                window.open(currentSong.downloadUrl[4]?.url, "_blank");
+              } else {
+                downloadAudio();
+              }
+            }}
             className="cursor-pointer hover:scale-90 transition-all duration-300 size-5"
           />
           <LiaShareSolid
@@ -255,7 +262,7 @@ const Player = ({ songId }: { songId: string }) => {
         className={` ${
           isMediaMinimised
             ? "hidden"
-            : "flex tems-center justify-center flex-col w-full"
+            : "flex tems-center justify-center flex-col w-full mt-8"
         } `}
       >
         {/* Album Art */}
