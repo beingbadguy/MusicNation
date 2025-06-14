@@ -67,6 +67,7 @@ const Player = ({ songId }: { songId: string }) => {
     isMediaMinimised,
     mediaMinimiseToggle,
   } = useStore();
+  console.log(isMediaMinimised);
 
   const [currentSong, setCurrentSong] = useState<SongData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -325,13 +326,7 @@ const Player = ({ songId }: { songId: string }) => {
           isMediaMinimised ? "" : "hidden"
         } flex items-center justify-between gap-4 w-full p-2 cursor-pointer`}
       >
-        <div
-          onClick={() => {
-            if (isMediaMinimised) {
-              mediaMinimiseToggle();
-            }
-          }}
-        >
+        <div>
           <img
             src={currentSong?.image[2]?.url}
             alt="cover"
@@ -342,14 +337,7 @@ const Player = ({ songId }: { songId: string }) => {
         </div>
 
         {/* Song Info */}
-        <div
-          onClick={() => {
-            if (isMediaMinimised) {
-              mediaMinimiseToggle();
-            }
-          }}
-          className="flex items-center justify-center flex-col "
-        >
+        <div className="flex items-center justify-center flex-col ">
           <div className="font-bold text-[10px] text-center my-1">
             {currentSong?.name}
           </div>
@@ -365,7 +353,6 @@ const Player = ({ songId }: { songId: string }) => {
           } flex items-center justify-center transition-all duration-300 ease-in cursor-pointer`}
           onClick={(e) => {
             e.stopPropagation();
-
             togglePlay();
           }}
         >
