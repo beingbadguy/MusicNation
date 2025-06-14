@@ -26,7 +26,9 @@ export default function RootLayout({
           {mediaStarted && (
             <div
               className={`${
-                isMediaMinimised ? "translate-y-[90%] absolute " : ""
+                isMediaMinimised
+                  ? "translate-y-[90%] fixed  bottom-0 w-full sm:w-1/2 md:w-sm lg:w-sm sm:max-w-3xl left-1/2 translate-x-[-50%]"
+                  : ""
               } absolute top-0 bottom-0 inset-0 z-[999] transniton-all duration-300 ease-in-out pb-2 `}
             >
               <MediaPlayer />
