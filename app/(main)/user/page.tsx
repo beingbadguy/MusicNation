@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   AiOutlineHeart,
@@ -8,6 +8,7 @@ import {
 } from "react-icons/ai";
 import { MdClearAll } from "react-icons/md";
 import { useRouter } from "next/navigation";
+import { BiCode } from "react-icons/bi";
 
 const Page = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -38,6 +39,10 @@ const Page = () => {
     window.location.reload();
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <motion.div
       initial={{ y: -100, opacity: 0 }}
@@ -64,6 +69,11 @@ const Page = () => {
         icon={<MdClearAll size={20} />}
         text="Clear Everything"
         onClick={() => handleActionClick("clearAll")}
+      />
+      <ActionButton
+        icon={<BiCode size={20} />}
+        text="Made by Aman"
+        onClick={() => console.log("Aman")}
       />
 
       <AnimatePresence>

@@ -16,6 +16,7 @@ const Page = () => {
 
   useEffect(() => {
     getRecentSongsPlayed();
+    window.scrollTo(0, 0);
   }, []);
   return (
     <motion.div

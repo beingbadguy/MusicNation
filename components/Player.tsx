@@ -76,29 +76,30 @@ const Player = ({ songId }: { songId: string }) => {
   const [loading, setLoading] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [progress, setProgress] = useState(0);
+  console.log(recentSongs);
 
   const nextSongHandle = () => {
-    if (!recentSongs) return;
-    if (!recentSongs?.length) return;
+    if (!recentSongs) return null;
     setCurrentSong((prev) => {
       if (!prev) return null;
       const currentIndex = recentSongs.findIndex((song) => song.id === prev.id);
+      console.log(currentIndex);
       const nextIndex = currentIndex + 1;
       if (nextIndex >= recentSongs.length) return recentSongs[0];
       else {
-        return recentSongs[nextIndex] ?? null;
+        return recentSongs[nextIndex];
       }
     });
   };
   const prevSongHandle = () => {
-    if (!recentSongs) return;
+    if (!recentSongs) return null;
     setCurrentSong((prev) => {
       if (!prev) return null;
       if (prev) {
         const prevIndex = recentSongs.findIndex((song) => song.id === prev.id);
         if (prevIndex < 0) return recentSongs[0];
         else {
-          return recentSongs[prevIndex] || null;
+          return recentSongs[prevIndex];
         }
       }
       return null;

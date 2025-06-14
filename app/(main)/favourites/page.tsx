@@ -16,6 +16,7 @@ const Page = () => {
 
   useEffect(() => {
     getFavouriteSongs();
+    window.scrollTo(0, 0);
   }, []);
   return (
     <motion.div
@@ -53,7 +54,6 @@ const Page = () => {
                 onClick={() => {
                   mediaStartedToggle();
                   setSongId(song.id);
-                  // console.log(song?.artists?.primary[0]?.id);
                   setRecentSongsPlayed(song);
                   setLastPlayedSongId(song?.artists?.primary[1]?.id);
                 }}

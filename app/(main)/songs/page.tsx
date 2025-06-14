@@ -15,8 +15,8 @@ const Page = () => {
     setRecentSongs,
     setLastPlayedSongId,
     setRecentSongsPlayed,
+    recentSongs,
   } = useStore();
-  // console.log(songs);
 
   const fetchSongs = async () => {
     setLoading(true);
