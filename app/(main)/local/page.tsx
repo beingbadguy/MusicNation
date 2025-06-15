@@ -37,7 +37,7 @@ const Page = () => {
       </div>
       <div className="space-y-2 my-4">
         {recentSongsPlayed &&
-          recentSongsPlayed?.map((song) => {
+          [...recentSongsPlayed].reverse()?.map((song) => {
             const artistName = song?.artists?.primary[0]?.name;
             const image = song?.image[0]?.url;
             const duration = song?.duration;
@@ -53,7 +53,10 @@ const Page = () => {
                   setSongId(song.id);
                   // console.log(song?.artists?.primary[0]?.id);
                   setRecentSongsPlayed(song);
-                  setLastPlayedSongId(song?.artists?.primary[1]?.id);
+                  setLastPlayedSongId(
+                    song?.artists?.primary?.[1]?.id ||
+                      song?.artists?.primary?.[0]?.id
+                  );
                 }}
               >
                 <img src={image} alt="song" className="w-14 h-14 rounded-lg" />
