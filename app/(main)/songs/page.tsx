@@ -15,7 +15,6 @@ const Page = () => {
     setRecentSongs,
     setLastPlayedSongId,
     setRecentSongsPlayed,
-    recentSongs,
   } = useStore();
 
   const fetchSongs = async () => {

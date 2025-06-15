@@ -22,7 +22,7 @@ const Page = () => {
       // console.log(response.data);
       setRecentSongs(response?.data?.data?.results || []);
       // setSongs(response?.data?.data?.results || []);
-      console.log(response?.data?.data?.results || []);
+      // console.log(response?.data?.data?.results || []);
     } catch (error) {
       console.error("Error fetching songs:", error);
     }
