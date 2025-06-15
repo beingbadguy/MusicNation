@@ -60,9 +60,9 @@ const Page = () => {
       setSongs((prevSongs) => [...prevSongs, ...newSongs]);
       setRecentSongs(newSongs);
 
-      setTimeout(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 100); // give React time to update DOM
+      // setTimeout(() => {
+      //   bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      // }, 100); // give React time to update DOM
     } catch (error) {
       console.error("Error fetching songs:", error);
     } finally {
@@ -119,10 +119,11 @@ const Page = () => {
         })}
         {/* 🔥 Scroll target */}
         <div ref={bottomRef} />
+        
       </div>
 
       <p
-        className="text-center mb-10 font-100 bg-[#224f59] p-1 rounded"
+        className="text-center mb-10 font-100 bg-[#224f59] p-1 rounded cursor-pointer hover:bg-teal-800 hover:scale-90 transition-all duration-300 ease-in-out"
         onClick={() => {
           setPage(page + 1);
         }}

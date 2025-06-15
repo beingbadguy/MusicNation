@@ -239,6 +239,10 @@ const Player = ({ songId }: { songId: string }) => {
     togglePlay();
   }, [currentSong]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentSong]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[70vh] w-full">

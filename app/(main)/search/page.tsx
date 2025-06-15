@@ -36,9 +36,9 @@ const Page = () => {
       setSongs((prev) => (reset ? newSongs : [...prev, ...newSongs]));
       setRecentSongs(newSongs);
 
-      setTimeout(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+      // setTimeout(() => {
+      //   bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      // }, 100);
     } catch (error) {
       console.error("Error fetching songs:", error);
     } finally {
@@ -119,7 +119,7 @@ const Page = () => {
           {/* Load More Button */}
           {!loading && (
             <p
-              className="text-center mb-10 font-100 bg-[#224f59] p-1 rounded cursor-pointer"
+              className="text-center mb-10 font-100 bg-[#224f59] p-1 rounded cursor-pointer hover:bg-teal-900 hover:scale-90 transition-all duration-300 ease-in-out"
               onClick={() => setPage((prev) => prev + 1)}
             >
               See More
