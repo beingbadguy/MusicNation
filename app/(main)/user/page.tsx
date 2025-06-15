@@ -73,7 +73,7 @@ const Page = () => {
       <ActionButton
         icon={<BiCode size={20} />}
         text="Made by Aman"
-        onClick={() => console.log("Aman")}
+        onClick={() => window.open("https://amancodes.vercel.app")}
       />
 
       <AnimatePresence>
@@ -118,7 +118,7 @@ const ActionButton = ({
   onClick: () => void;
 }) => (
   <button
-    className="w-full flex items-center justify-between gap-3 text-white bg-[#0A2E36] hover:bg-[#135867] rounded-xl transition "
+    className="w-full flex items-center justify-between gap-3 text-white bg-[#0A2E36] hover:bg-[#135867] rounded-xl transition p-2 cursor-pointer "
     onClick={onClick}
   >
     <span className="font-[400] text-sm">{text}</span>
