@@ -381,42 +381,45 @@ const Player = ({ songId }: { songId: string }) => {
           </div>
         </div>
       </div>
-      {/* phone main  */}
+      {/* phone minimized player */}
       <div
         onClick={() => {
           if (isMediaMinimised) {
             mediaMinimiseToggle();
           }
         }}
-        className={` ${
+        className={`${
           isMediaMinimised ? "" : "hidden"
-        } flex items-center justify-between gap-4 w-full p-2 cursor-pointer`}
+        } relative flex items-center w-full p-4 cursor-pointer overflow-hidden`}
       >
-        <div>
-          <img
-            src={currentSong?.image[2]?.url}
-            alt="cover"
-            className={` ${
-              isMediaMinimised ? "size-[50px]" : " size-[320px]"
-            } rounded brightness-75 object-cover `}
-          />
-        </div>
+        {/* Progress bar behind everything */}
+        <div
+          className="absolute top-0 left-0 h-full bg-[#135867] opacity-50 z-0 transition-all duration-300"
+          style={{ width: `${progress}%` }}
+        />
 
-        {/* Song Info */}
-        <div className="flex items-center justify-center flex-col ">
-          <div className="font-bold text-[10px] text-center my-1">
+        {/* Image */}
+        <img
+          src={currentSong?.image[2]?.url}
+          alt="cover"
+          className="size-[50px] rounded object-cover z-10"
+        />
+
+        {/* Info */}
+        <div className="flex-1 flex flex-col justify-center px-4 z-10 overflow-hidden">
+          <div className="font-bold text-[10px] text-white truncate">
             {currentSong?.name}
           </div>
-          <div className="text-[10px] text-gray-300">
+          <div className="text-[10px] text-gray-300 truncate">
             {currentSong?.artists.primary[0].name}
           </div>
         </div>
 
-        {/* play pause  */}
+        {/* Play/Pause Button */}
         <div
           className={`bg-[#135867] p-2 ${
             isPlaying ? "rounded-4xl" : "rounded-md"
-          } flex items-center justify-center transition-all duration-300 ease-in cursor-pointer`}
+          } flex items-center justify-center transition-all duration-300 ease-in cursor-pointer z-10`}
           onClick={(e) => {
             e.stopPropagation();
             togglePlay();
