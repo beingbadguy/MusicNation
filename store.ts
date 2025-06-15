@@ -64,8 +64,10 @@ export const useStore = create<StoreState>((set, get) => ({
   recentSongsPlayed: [],
   setRecentSongsPlayed: (song: SongData) => {
     if (!song) return;
-    const { getRecentSongsPlayed } = get();
+    const { getRecentSongsPlayed, recentSongsPlayed } = get();
     getRecentSongsPlayed();
+    const alreadyExists = recentSongsPlayed.find((f) => f.id === song.id);
+    if (alreadyExists) return;
     set({ recentSongsPlayed: [...get().recentSongsPlayed, song] });
     const updatedRecentSongs = get().recentSongsPlayed;
     localStorage.setItem(
@@ -78,7 +80,6 @@ export const useStore = create<StoreState>((set, get) => ({
     if (recentSongsPlayed) {
       set({
         recentSongsPlayed: JSON.parse(recentSongsPlayed),
-        recentSongs: JSON.parse(recentSongsPlayed),
       });
     }
   },
@@ -86,9 +87,9 @@ export const useStore = create<StoreState>((set, get) => ({
   setFavouriteSongs: (song: SongData) => {
     if (!song) return;
     const { favouriteSongs } = get();
+    get().getFavouriteSongs();
     const alreadyExists = favouriteSongs.find((f) => f.id === song.id);
     if (alreadyExists) return;
-    get().getFavouriteSongs();
     set({ favouriteSongs: [...get().favouriteSongs, song] });
     const updatedFavouriteSongs = get().favouriteSongs;
     localStorage.setItem(

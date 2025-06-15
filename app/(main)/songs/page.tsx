@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -8,7 +8,9 @@ import { useStore } from "@/store";
 
 const Page = () => {
   const [songs, setSongs] = useState<SongData[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
   const {
     mediaStartedToggle,
     setSongId,
@@ -17,28 +19,56 @@ const Page = () => {
     setRecentSongsPlayed,
   } = useStore();
 
+  const [page, setPage] = useState(0);
+
+  const handleScroll = () => {
+    if (loading) return;
+    const scrollTop = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const docHeight = document.body.offsetHeight;
+    if (scrollTop + windowHeight + 100 >= docHeight) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  useEffect(() => {
+    setPage(0);
+  }, []);
+
+  useEffect(() => {
+    fetchSongs();
+  }, [page]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const fetchSongs = async () => {
     setLoading(true);
     try {
+      const limit = 20;
       const response = await axios.get(
         `${
-          process.env.NEXT_PUBLIC_ENV == "development"
+          process.env.NEXT_PUBLIC_ENV === "development"
             ? "http://localhost:3000/"
             : process.env.NEXT_PUBLIC_API
-        }api/song?q=arijit`
+        }api/song?q=arijit&page=${page}&limit=${limit}`
       );
-      // console.log(response.data.data);
-      setRecentSongs(response?.data?.data?.results || []);
-      setSongs(response?.data?.data?.results || []);
+
+      const newSongs = response?.data?.data?.results || [];
+      setSongs((prevSongs) => [...prevSongs, ...newSongs]);
+      setRecentSongs(newSongs);
+
+      setTimeout(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100); // give React time to update DOM
     } catch (error) {
       console.error("Error fetching songs:", error);
     } finally {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    fetchSongs();
-  }, []);
 
   if (loading) {
     return (
@@ -47,17 +77,16 @@ const Page = () => {
       </div>
     );
   }
+
   return (
     <motion.div
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{
-        type: "spring",
-      }}
-      className="mb-30"
+      transition={{ type: "spring" }}
+      className="mb-20"
     >
       <div className="space-y-2 my-4">
-        {songs?.map((song) => {
+        {songs.map((song) => {
           const artistName = song?.artists?.primary[0]?.name;
           const image = song?.image[0]?.url;
           const duration = song?.duration;
@@ -71,8 +100,6 @@ const Page = () => {
               onClick={() => {
                 mediaStartedToggle();
                 setSongId(song.id);
-                // console.log(song?.artists?.primary[0]?.id);
-                // console.log(song);
                 setRecentSongsPlayed(song);
                 setLastPlayedSongId(song?.artists?.primary[1]?.id);
               }}
@@ -90,7 +117,18 @@ const Page = () => {
             </div>
           );
         })}
+        {/* 🔥 Scroll target */}
+        <div ref={bottomRef} />
       </div>
+
+      <p
+        className="text-center mb-10 font-100 bg-[#224f59] p-1 rounded"
+        onClick={() => {
+          setPage(page + 1);
+        }}
+      >
+        See More
+      </p>
     </motion.div>
   );
 };

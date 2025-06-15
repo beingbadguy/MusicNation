@@ -70,39 +70,37 @@ const Player = ({ songId }: { songId: string }) => {
     recentSongs,
     setFavouriteSongs,
     favouriteSongs,
+    setRecentSongsPlayed,
   } = useStore();
 
   const [currentSong, setCurrentSong] = useState<SongData | null>(null);
   const [loading, setLoading] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [progress, setProgress] = useState(0);
-  console.log(recentSongs);
 
   const nextSongHandle = () => {
     if (!recentSongs) return null;
     setCurrentSong((prev) => {
       if (!prev) return null;
       const currentIndex = recentSongs.findIndex((song) => song.id === prev.id);
-      console.log(currentIndex);
+      // console.log(currentIndex);
       const nextIndex = currentIndex + 1;
       if (nextIndex >= recentSongs.length) return recentSongs[0];
-      else {
-        return recentSongs[nextIndex];
-      }
+      else return recentSongs[nextIndex];
     });
   };
+
   const prevSongHandle = () => {
-    if (!recentSongs) return null;
+    if (!recentSongs) return;
+
     setCurrentSong((prev) => {
       if (!prev) return null;
-      if (prev) {
-        const prevIndex = recentSongs.findIndex((song) => song.id === prev.id);
-        if (prevIndex < 0) return recentSongs[0];
-        else {
-          return recentSongs[prevIndex];
-        }
-      }
-      return null;
+
+      const currentIndex = recentSongs.findIndex((song) => song.id === prev.id);
+      const prevIndex =
+        (currentIndex - 1 + recentSongs.length) % recentSongs.length;
+
+      return recentSongs[prevIndex];
     });
   };
 
@@ -223,6 +221,12 @@ const Player = ({ songId }: { songId: string }) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [hasStartedPlaying, currentSong, togglePlay]);
+
+  useEffect(() => {
+    if (currentSong) {
+      setRecentSongsPlayed(currentSong);
+    }
+  }, [currentSong]);
 
   useEffect(() => {
     if (currentSong && audioRef.current) {

@@ -2,54 +2,75 @@
 import { SongData } from "@/components/Player";
 import { useStore } from "@/store";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const Page = () => {
   const [query, setQuery] = useState("");
   const [songs, setSongs] = useState<SongData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(0);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
   const {
     mediaStartedToggle,
     setSongId,
     setRecentSongs,
     setRecentSongsPlayed,
   } = useStore();
-  const searchSong = async () => {
+
+  const fetchSongs = async (reset = false) => {
+    if (loading) return;
     setLoading(true);
     try {
+      const limit = 20;
       const response = await axios.get(
         `${
-          process.env.NEXT_PUBLIC_ENV == "development"
+          process.env.NEXT_PUBLIC_ENV === "development"
             ? "http://localhost:3000/"
             : process.env.NEXT_PUBLIC_API
-        }api/song?q=${query}`
+        }api/song?q=${query}&page=${page}&limit=${limit}`
       );
-      // console.log(response.data.data);
-      setRecentSongs(response?.data?.data?.results || []);
+      const newSongs = response?.data?.data?.results || [];
 
-      setSongs(response?.data?.data?.results || []);
+      setSongs((prev) => (reset ? newSongs : [...prev, ...newSongs]));
+      setRecentSongs(newSongs);
+
+      setTimeout(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     } catch (error) {
       console.error("Error fetching songs:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  // Debounced search trigger
   useEffect(() => {
+    if (!query) return;
     const timer = setTimeout(() => {
-      searchSong();
+      setPage(0);
+      fetchSongs(true); // reset = true on new query
     }, 300);
     return () => clearTimeout(timer);
   }, [query]);
+
+  // Fetch more when page changes (but not for page 0, handled above)
+  useEffect(() => {
+    if (page === 0 || !query) return;
+    fetchSongs();
+  }, [page]);
+
   return (
-    <div className="w-full">
+    <div className="w-full mb-20">
       <div className="w-full">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Enter a name"
-          className=" w-full px-4 py-2 border-b outline-none rounded-xl"
+          className="w-full px-4 py-2 border-b outline-none rounded-xl"
         />
       </div>
 
@@ -57,13 +78,14 @@ const Page = () => {
         <div>{query.length > 0 && `Results for ${query}`}</div>
         <div>{songs.length > 0 && `(${songs.length})`}</div>
       </div>
-      {loading ? (
-        <div className="flex items-center justify-center min-h-[70vh] w-full ">
+
+      {loading && songs.length === 0 ? (
+        <div className="flex items-center justify-center min-h-[70vh] w-full">
           <AiOutlineLoading3Quarters className="animate-spin" />
         </div>
       ) : songs.length > 0 && query ? (
         <div className="space-y-2">
-          {songs?.map((song) => {
+          {songs.map((song) => {
             const artistName = song?.artists?.primary[0]?.name;
             const image = song?.image[0]?.url;
             const duration = song?.duration;
@@ -86,19 +108,32 @@ const Page = () => {
                   <div className="flex items-center justify-between">
                     <p className="text-[10px] text-gray-300 ">{artistName}</p>
                     <div className="text-[10px] text-gray-300 ">
-                      {minutes}:{seconds}
+                      {minutes}:{seconds.toString().padStart(2, "0")}
                     </div>
                   </div>
                 </div>
               </div>
             );
           })}
+
+          {/* Load More Button */}
+          {!loading && (
+            <p
+              className="text-center mb-10 font-100 bg-[#224f59] p-1 rounded cursor-pointer"
+              onClick={() => setPage((prev) => prev + 1)}
+            >
+              See More
+            </p>
+          )}
+
+          {/* ✅ Scroll to this on fetch */}
+          <div ref={bottomRef} />
         </div>
       ) : (
         query.length > 0 &&
         !loading &&
-        songs.length == 0 && (
-          <div className="flex items-center justify-center min-h-[70vh] w-full ">
+        songs.length === 0 && (
+          <div className="flex items-center justify-center min-h-[70vh] w-full">
             No results found
           </div>
         )

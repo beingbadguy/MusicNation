@@ -9,7 +9,6 @@ const Page = () => {
     recentSongsPlayed,
     mediaStartedToggle,
     setSongId,
-
     setLastPlayedSongId,
     setRecentSongsPlayed,
   } = useStore();
