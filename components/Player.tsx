@@ -317,7 +317,7 @@ const Player = ({ songId }: { songId: string }) => {
         className={` ${
           isMediaMinimised
             ? "hidden"
-            : "flex tems-center justify-center flex-col w-full mt-8"
+            : "flex tems-center justify-center flex-col w-full mt-2"
         } `}
       >
         {/* Album Art */}
