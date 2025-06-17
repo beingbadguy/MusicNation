@@ -267,12 +267,12 @@ const Player = ({ songId }: { songId: string }) => {
         } w-full   flex items-center justify-between`}
       >
         <div
-          className=" cursor-pointer hover:text-amber-300"
+          className=" cursor-pointer hover:text-amber-300 flex items-center gap-4"
           onClick={() => {
             mediaMinimiseToggle();
           }}
         >
-          <IoReturnUpBackOutline className="size-5" />
+          <IoReturnUpBackOutline className="size-5" /> <p>Now Playing</p>
         </div>
         <div className="flex items-center gap-2">
           {isAlreadyFav() ? (
@@ -307,17 +307,17 @@ const Player = ({ songId }: { songId: string }) => {
           />
         </div>
       </div>
-      <div className={`${isMediaMinimised ? "hidden" : ""} w-full my-2`}>
+      {/* <div className={`${isMediaMinimised ? "hidden" : ""} w-full my-2`}>
         <h1 className={` ${isMediaMinimised ? "hidden" : ""} font-bold`}>
           Now Playing
         </h1>
-      </div>
+      </div> */}
       {/* main  */}
       <div
         className={` ${
           isMediaMinimised
             ? "hidden"
-            : "flex tems-center justify-center flex-col w-full mt-2"
+            : "flex tems-center justify-center flex-col w-full mt-8 "
         } `}
       >
         {/* Album Art */}
