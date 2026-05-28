@@ -6,7 +6,7 @@ export async function GET(
 ) {
   const { id } = await params;
   try {
-    const response = await fetch(`https://saavn.dev/api/songs/${id}`);
+    const response = await fetch(`https://saavn.sumit.co/api/songs/${id}`);
     const data = await response.json();
     return NextResponse.json(data, {
       status: 200,

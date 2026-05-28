@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const { id } = await params;
   try {
-    const response = await fetch(`https://saavn.dev/api/artists/${id}/songs`);
+    const response = await fetch(`https://saavn.sumit.co/api/artists/${id}/songs`);
     const data = await response.json();
     return NextResponse.json(data, {
       status: 200,

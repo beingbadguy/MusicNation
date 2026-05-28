@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "20");
 
     const apiRes = await fetch(
-      `https://saavn.dev/api/search/songs?query=${q}&page=${page}&limit=${limit}`
+      `https://saavn.sumit.co/api/search/songs?query=${q}&page=${page}&limit=${limit}`
     );
     const data = await apiRes.json();
 
